@@ -1,36 +1,49 @@
 import express from 'express';
-import { Op, fn, col } from 'sequelize';
-import Gasto from '../models/Gasto.js';
+import Empleado from '../models/Empleado.js';
 import Departamento from '../models/Departamento.js';
+import Gasto from '../models/Gasto.js';
 
 const router = express.Router();
 
-router.post('/filtrar-gastos', async (req, res) => {
-    const { fechaInicio, fechaFin } = req.body;
-
-    if (new Date(fechaInicio) > new Date(fechaFin)) {
-        return res.status(400).json({ error: 'La fecha de inicio no puede ser mayor a la fecha de fin.' });
-    }
-
+// Crear un nuevo departamento
+router.post('/departamento', async (req, res) => {
     try {
-        const resultados = await Gasto.findAll({
-            where: {
-                gastoFecha: {
-                    [Op.between]: [fechaInicio, fechaFin],
-                },
-            },
-            include: [{ model: Departamento }],
-            attributes: [
-                'gastoDepartamentoID',
-                [fn('SUM', col('gastoMonto')), 'total'],
-            ],
-            group: ['gastoDepartamentoID'],
-        });
-
-        res.json(resultados);
+        const { departamentoNombre } = req.body;
+        const nuevoDepartamento = await Departamento.create({ departamentoNombre });
+        res.status(201).json(nuevoDepartamento);
     } catch (error) {
-        console.error('Error al filtrar gastos:', error);
-        res.status(500).json({ error: 'Ocurrió un error en el servidor.' });
+        console.error('Error al insertar departamento:', error);
+        res.status(500).json({ error: 'Error al insertar el departamento' });
+    }
+});
+
+// Crear un nuevo empleado
+router.post('/empleado', async (req, res) => {
+    try {
+        const { empleadoNombre } = req.body;
+        const nuevoEmpleado = await Empleado.create({ empleadoNombre });
+        res.status(201).json(nuevoEmpleado);
+    } catch (error) {
+        console.error('Error al insertar empleado:', error);
+        res.status(500).json({ error: 'Error al insertar el empleado' });
+    }
+});
+
+// Crear un nuevo gasto
+router.post('/gasto', async (req, res) => {
+    try {
+        const { gastoFecha, gastoDescripcion, gastoMonto, gastoEmpleadoID, gastoDepartamentoID } = req.body;
+        const nuevoGasto = await Gasto.create({
+            gastoFecha,
+            gastoDescripcion,
+            gastoMonto,
+            gastoEmpleadoID,
+            gastoDepartamentoID,
+        });
+        res.status(201).json(nuevoGasto);
+    } catch (error) {
+        console.error('Error al insertar gasto:', error);
+        res.status(500).json({ error: 'Error al insertar el gasto' });
     }
 });
 
