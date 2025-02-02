@@ -36,7 +36,10 @@ const Gasto = sequelize.define('Gasto', {
     },
 });
 
-Gasto.belongsTo(Empleado, { foreignKey: 'gastoEmpleadoID' });
-Gasto.belongsTo(Departamento, { foreignKey: 'gastoDepartamentoID' });
+Gasto.belongsTo(Empleado, { foreignKey: 'gastoEmpleadoID', as: 'Empleado' });
+Gasto.belongsTo(Departamento, { foreignKey: 'gastoDepartamentoID', as: 'Departamento' });
+
+// Ensure the association is correctly defined
+Departamento.hasMany(Gasto, { foreignKey: 'gastoDepartamentoID', as: 'Gastos' });
 
 export default Gasto;

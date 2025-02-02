@@ -63,27 +63,29 @@ function App() {
             </div>
 
             {/* Resultados */}
-            {resultados.length > 0 && (
-                <div className="resultados">
-                    <h3>Resultados</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Departamento</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {resultados.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{item.Departamento}</td>
-                                    <td>{item.Total}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+            {resultados.length > 0 ? (
+    <div className="resultados">
+        <h3>Resultados</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Departamento</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {resultados.map((item, index) => (
+                    <tr key={index}>
+                        <td>{item.Departamento?.departamentoNombre || 'Departamento'}</td>
+                        <td>{item.Total}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    </div>
+) : (
+    <p>No se encontraron resultados para el rango de fechas seleccionado.</p>
+)}
         </>
     );
 }
